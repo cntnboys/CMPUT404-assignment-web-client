@@ -37,6 +37,9 @@ class HTTPClient(object):
 
     def connect(self, host, port):
         # use sockets!
+        #http://stackoverflow.com/questions/68774/best-way-to-open-a-socket-in-python
+        connect_sock = socket.socket()
+        connect_sock.connect((host, port))
         return None
 
     def get_code(self, data):
