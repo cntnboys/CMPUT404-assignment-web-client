@@ -24,6 +24,8 @@ import re
 # you may use urllib to encode data appropriately
 import urllib
 
+from urlparse import urlparse
+
 def help():
     print "httpclient.py [GET/POST] [URL]\n"
 
@@ -33,7 +35,33 @@ class HTTPRequest(object):
         self.body = body
 
 class HTTPClient(object):
-    #def get_host_port(self,url):
+
+	HTTPHost = ""
+	HTTPPath = ""
+	HTTPPort = ""
+
+    def get_host_port(self,url):
+        #parse a url to get what info I need, Chunhanlee told me about this builtin python library function
+        #https://docs.python.org/2/library/urlparse.html
+        
+	#http://stackoverflow.com/questions/20315010/python-urlparse-urlparseurl-hostname-return-none-value
+        #call urlparse to seperate url
+        self.HTTPHost = urlparse.urlparse(url).hostname or ''
+	self.HTTPPath = urlparse.urlparse(url).path or ''
+	
+	# if no path then set path to something
+	if (path == ''):
+		path = path + "\"
+        
+       	# check for port
+	self.HTTPport = urlparse.urlparse(url).port or None
+
+	#https://msdn.microsoft.com/en-us/library/cc959833.aspx
+	#HTTP usually run on port 80, or maybe 443 SSL ?
+	if self.HTTPport == None:
+		self.HTTPport == "80"
+
+        
 
     def connect(self, host, port):
         # use sockets!
