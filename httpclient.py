@@ -44,11 +44,6 @@ class HTTPClient(object):
         headers= ""
         body = ""
 
-        #cant get path in get_host_port
-        def parsepath(self,url):
-            self.HTTPPath = urlparse(url).path
-            print("Path",self.HTTPPath)
-
 	def get_host_port(self,url):
             #parse a url to get what info I need, Chunhanlee told me about this builtin python library function
             #https://docs.python.org/2/library/urlparse.html
@@ -58,8 +53,7 @@ class HTTPClient(object):
 	    self.HTTPHost = urlparse(url).hostname 
 
             #get pathway
-	    #self.HTTPPath = urlparse(url).path or '/'
-            self.parsepath(url)
+	    self.HTTPPath = urlparse(url).path
         
 	    # check for port
             self.HTTPPort = urlparse(url).port or None
@@ -69,34 +63,34 @@ class HTTPClient(object):
 	    if self.HTTPPort == None:
 		self.HTTPPort = "80"
 
-            print("Host",self.HTTPHost)
-            print("Port",self.HTTPPort)
+           # print("Host",self.HTTPHost)
+           # print("Port",self.HTTPPort)
           
 
         def connect(self, host, port):
             # use sockets!
             #http://stackoverflow.com/questions/68774/best-way-to-open-a-socket-in-python
-            connect_sock = socket.socket()
+            connect_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             connect_sock.connect((host, port))
             return connect_sock
 
         def get_code(self, data):
             print(data)
-            code = int(data.split()[1])
-            print(code)
-            return code
+            self.code = int(data.split(" ")[1])
+            print(self.code)
+            return self.code
 
         def get_headers(self,data):
             print (data)
-            headers = data.split("/r/n/r/n")[0]
-            print(headers)
-            return headers
+            self.headers = data.split("/r/n/r/n")[0]
+            print(self.headers)
+            return self.headers
 
         def get_body(self, data):
             print(data)
-            body = data.split("/r/n/r/n")[1]
-            print(body)
-            return body
+            self.body = data.split("/r/n/r/n")[1]
+            print(self.body)
+            return self.body
 
         # read everything from the socket
         def recvall(self, sock):
