@@ -118,7 +118,7 @@ class HTTPClient(object):
             #minimum req for a HTTP get/post
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
-            requestHttp = "GET"+self.HTTPPath+"HTTP/1.1/r/n"+"Host:"+self.HTTPHost+"/r/n"+"Accept: */*"+"/r/n"+"Connection: Close /r/n/r/n"
+            requestHttp = "GET"+self.HTTPPath+"HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Connection: Close \r\n\r\n"
             print(requestHttp)
 
             #sending message through socket
