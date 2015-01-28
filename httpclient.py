@@ -50,7 +50,7 @@ class HTTPClient(object):
         
             #http://stackoverflow.com/questions/20315010/python-urlparse-urlparseurl-hostname-return-none-value
             #call urlparse to seperate url
-	    self.HTTPHost = urlparse(url).hostname or ""
+	    self.HTTPHost = urlparse(url).hostname 
 
             #get pathway
 	    self.HTTPPath = urlparse(url).path or '/'
@@ -61,10 +61,11 @@ class HTTPClient(object):
 	    #https://msdn.microsoft.com/en-us/library/cc959833.aspx
 	    #HTTP usually run on port 80, or maybe 443 SSL ?
 	    if self.HTTPPort == None:
-		self.HTTPPort == "80"
+		self.HTTPPort = "80"
 
-            print(self.HTTPHost)
-            print(self.HTTPPort)
+            print("Host",self.HTTPHost)
+            print("Port",self.HTTPPort)
+            print("Path",self.HTTPPath)
 
         def connect(self, host, port):
             # use sockets!
@@ -81,7 +82,7 @@ class HTTPClient(object):
 
         def get_headers(self,data):
             print (data)
-            headers = data.split("/r/n")[0]
+            headers = data.split("/r/n/r/n")[0]
             print(headers)
             return headers
 
@@ -110,9 +111,9 @@ class HTTPClient(object):
             #need host and port for a socket connection
             self.get_host_port(url)
             #https://docs.python.org/2/library/socketserver.html
-            while(True):
-                #print("Creating socket to '" + self.HTTPHost + "' on port " + self.HTTPPort)
-                socket = self.connect(self.HTTPHost,self.HTTPPort)
+        
+            #print("Creating socket to '" + self.HTTPHost + "' on port " + self.HTTPPort)
+            socket = self.connect(self.HTTPHost,self.HTTPPort)
             #minimum req for a HTTP get/post
             #https://ellislab.com/forums/viewthread/74005/#367460
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
