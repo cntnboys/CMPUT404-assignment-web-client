@@ -63,9 +63,9 @@ class HTTPClient(object):
 	    if self.HTTPPort == None:
 		self.HTTPPort = "80"
 
-           # print("Host",self.HTTPHost)
-           # print("Port",self.HTTPPort)
-          
+            print("Host",self.HTTPHost)
+            print("Port",self.HTTPPort)
+            print("Path",self.HTTPPath)
 
         def connect(self, host, port):
             # use sockets!
@@ -112,13 +112,14 @@ class HTTPClient(object):
             self.get_host_port(url)
             #https://docs.python.org/2/library/socketserver.html
         
-            #print("Creating socket to '" + self.HTTPHost + "' on port " + self.HTTPPort)
+            print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
             socket = self.connect(self.HTTPHost,self.HTTPPort)
 
             #minimum req for a HTTP get/post
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
-            requestHttp = "GET"+self.HTTPPath+"HTTP/1.1/r/n"+"Host:"+self.HTTPHost+"/r/n"+"Accept: */*"+"/r/n"
+            requestHttp = "GET"+self.HTTPPath+"HTTP/1.1/r/n"+"Host:"+self.HTTPHost+"/r/n"+"Accept: */*"+"/r/n"+"Connection: Close /r/n/r/n"
+            print(requestHttp)
 
             #sending message through socket
             #http://www.binarytides.com/python-socket-programming-tutorial/
