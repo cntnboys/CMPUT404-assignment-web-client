@@ -75,21 +75,27 @@ class HTTPClient(object):
             return connect_sock
 
         def get_code(self, data):
-            print(data)
-            self.code = int(data.split(" ")[1])
-            print(self.code)
+	    #print("DATAISTHIS",data)
+	    self.code = data.split("code")
+	    #print ("THIS IS SPLITCODE",self.code)	
+	    #print("11231323", self.code[1])
+	    self.code = self.code[1].split(".")
+	    self.code = self.code[0].strip()
+	    self.code = int(self.code)
+	    #self.code = int(self.code)
+            print("THIS IS CODE", self.code)
             return self.code
 
         def get_headers(self,data):
-            print (data)
-            self.headers = data.split("/r/n/r/n")[0]
-            print(self.headers)
+	
+	    #print("this is the data", data.split("\n")
+	    
             return self.headers
 
         def get_body(self, data):
-            print(data)
-            self.body = data.split("/r/n/r/n")[1]
-            print(self.body)
+            print("This is the data", data)
+	    self.body = data.split("\r\n\r\n")[1]
+	    print("This is the body", self.body)
             return self.body
 
         # read everything from the socket
@@ -118,7 +124,7 @@ class HTTPClient(object):
             #minimum req for a HTTP get/post
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
-            requestHttp = "GET"+self.HTTPPath+"HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Connection: Close \r\n\r\n"
+            requestHttp = "GET"+self.HTTPPath+"HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Connection: close\r\n\r\n"
             print(requestHttp)
 
             #sending message through socket
@@ -128,7 +134,7 @@ class HTTPClient(object):
             #get response
             response = self.recvall(socket)
 
-            print(response)
+            print("This is the response",response)
 
             return HTTPRequest(self.get_code(response), self.get_body(response))
 
