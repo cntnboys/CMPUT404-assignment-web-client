@@ -50,18 +50,18 @@ class HTTPClient(object):
         
             #http://stackoverflow.com/questions/20315010/python-urlparse-urlparseurl-hostname-return-none-value
             #call urlparse to seperate url
-	    self.HTTPHost = urlparse.urlparse(url).hostname or ''
+	    self.HTTPHost = urlparse(url).hostname or ''
 
             #get pathway
-	    self.HTTPPath = urlparse.urlparse(url).path or '/'
+	    self.HTTPPath = urlparse(url).path or '/'
         
 	    # check for port
-            self.HTTPport = urlparse.urlparse(url).port or None
+            self.HTTPPort = urlparse(url).port or None
 
 	    #https://msdn.microsoft.com/en-us/library/cc959833.aspx
 	    #HTTP usually run on port 80, or maybe 443 SSL ?
-	    if self.HTTPport == None:
-		self.HTTPport == "80"
+	    if self.HTTPPort == None:
+		self.HTTPPort == "80"
 
         def connect(self, host, port):
             # use sockets!
@@ -71,13 +71,23 @@ class HTTPClient(object):
             return connect_sock
 
         def get_code(self, data):
-            return None
+            print(data)
+            code = data.split()[1]
+            code = int(code)
+            print(code)
+            return code
 
         def get_headers(self,data):
-            return None
+            print (data)
+            headers = data.split("/r/n")[0]
+            print(headers)
+            return headers
 
         def get_body(self, data):
-            return None
+            print(data)
+            body = data.split("/r/n/r/n")[1]
+            print(body)
+            return body
 
         # read everything from the socket
         def recvall(self, sock):
@@ -92,20 +102,20 @@ class HTTPClient(object):
             return str(buffer)
 
         def GET(self, url, args=None):
-            code = 500
-            body = ""
+            #code = 500
+            #body = ""
             
             #need host and port for a socket connection
             self.get_host_port(url)
             #https://docs.python.org/2/library/socketserver.html
             while(True):
-                print("Creating socket to '" + self.HTTPHost + "' on port " + HTTPPort)
-                socket = self.connect(HTTPHOST,HTTPPORT)
+                #print("Creating socket to '" + self.HTTPHost + "' on port " + self.HTTPPort)
+                socket = self.connect(self.HTTPHost,self.HTTPPort)
             #minimum req for a HTTP get/post
             #https://ellislab.com/forums/viewthread/74005/#367460
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
-            requestHttp = "GET"+HTTPPath+"HTTP/1.1/r/n"+"Host:"+HTTPHost+"/r/n"+"Accept: */*"+"/r/n"
+            requestHttp = "GET"+self.HTTPPath+"HTTP/1.1/r/n"+"Host:"+self.HTTPHost+"/r/n"+"Accept: */*"+"/r/n"
 
             #sending message through socket
             #http://www.binarytides.com/python-socket-programming-tutorial/
@@ -115,11 +125,8 @@ class HTTPClient(object):
             response = self.recvall(socket)
 
             print(response)
-           
-            
-     
 
-            return HTTPRequest(code, body)
+            return HTTPRequest(self.get_code(response), self.get_body(response))
 
         def POST(self, url, args=None):
             code = 500
