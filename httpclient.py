@@ -35,40 +35,40 @@ class HTTPRequest(object):
         self.body = body
 
 class HTTPClient(object):
-
+    
+        #initialize variables used
 	HTTPHost = ""
 	HTTPPath = ""
 	HTTPPort = ""
+        code = ""
+        headers= ""
+        body = ""
 
 	def get_host_port(self,url):
-        #parse a url to get what info I need, Chunhanlee told me about this builtin python library function
-        #https://docs.python.org/2/library/urlparse.html
+            #parse a url to get what info I need, Chunhanlee told me about this builtin python library function
+            #https://docs.python.org/2/library/urlparse.html
         
-	#http://stackoverflow.com/questions/20315010/python-urlparse-urlparseurl-hostname-return-none-value
-        #call urlparse to seperate url
-	    self.HTTPHost = urlparse.urlparse(url).hostname 
-	    self.HTTPPath = urlparse.urlparse(url).path
-	
-	# if no path then set path to something
-	#if (HTTPPath == ''):
-	  #  HTTPPath = "\"
+            #http://stackoverflow.com/questions/20315010/python-urlparse-urlparseurl-hostname-return-none-value
+            #call urlparse to seperate url
+	    self.HTTPHost = urlparse.urlparse(url).hostname or ''
+
+            #get pathway
+	    self.HTTPPath = urlparse.urlparse(url).path or '/'
         
-	# check for port
+	    # check for port
             self.HTTPport = urlparse.urlparse(url).port or None
 
-	#https://msdn.microsoft.com/en-us/library/cc959833.aspx
-	#HTTP usually run on port 80, or maybe 443 SSL ?
+	    #https://msdn.microsoft.com/en-us/library/cc959833.aspx
+	    #HTTP usually run on port 80, or maybe 443 SSL ?
 	    if self.HTTPport == None:
 		self.HTTPport == "80"
-
-        
 
         def connect(self, host, port):
             # use sockets!
             #http://stackoverflow.com/questions/68774/best-way-to-open-a-socket-in-python
             connect_sock = socket.socket()
             connect_sock.connect((host, port))
-            return None
+            return connect_sock
 
         def get_code(self, data):
             return None
@@ -79,7 +79,7 @@ class HTTPClient(object):
         def get_body(self, data):
             return None
 
-    # read everything from the socket
+        # read everything from the socket
         def recvall(self, sock):
             buffer = bytearray()
             done = False
@@ -89,11 +89,27 @@ class HTTPClient(object):
                     buffer.extend(part)
                 else:
                     done = not part
-                return str(buffer)
+            return str(buffer)
 
         def GET(self, url, args=None):
             code = 500
             body = ""
+            
+            #need host and port for a socket connection
+            self.get_host_url(url)
+            #https://docs.python.org/2/library/socketserver.html
+            while(True):
+                print("Creating socket to '" + self.HTTPHost + "' on port " + HTTPPort)
+                socket = self.connect(HTTPHOST,HTTPPORT)
+            #minimum req for a HTTP get/post
+            #https://ellislab.com/forums/viewthread/74005/#367460
+            #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
+            #class slides HTTP 2
+            requestHttp = "GET"+HTTPPath+"HTTP/1.1/r/n"+"Host:"+HTTPHost+"/r/n"+
+           
+            
+     
+
             return HTTPRequest(code, body)
 
         def POST(self, url, args=None):
