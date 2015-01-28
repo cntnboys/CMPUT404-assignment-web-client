@@ -96,7 +96,7 @@ class HTTPClient(object):
             body = ""
             
             #need host and port for a socket connection
-            self.get_host_url(url)
+            self.get_host_port(url)
             #https://docs.python.org/2/library/socketserver.html
             while(True):
                 print("Creating socket to '" + self.HTTPHost + "' on port " + HTTPPort)
