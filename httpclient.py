@@ -76,13 +76,14 @@ class HTTPClient(object):
 
         def get_code(self, data):
 	    #print("DATAISTHIS",data)
-	    self.code = data.split("code")
+	    #self.code = data.split("code")
 	    #print ("THIS IS SPLITCODE",self.code)	
 	    #print("11231323", self.code[1])
-	    self.code = self.code[1].split(".")
-	    self.code = self.code[0].strip()
-	    self.code = int(self.code)
+	    #self.code = self.code[1].split(".")
+	    #self.code = self.code[0].strip()
 	    #self.code = int(self.code)
+	    #self.code = int(self.code)
+	    self.code = int(data.split()[1])
             print("THIS IS CODE", self.code)
             return self.code
 
@@ -94,7 +95,7 @@ class HTTPClient(object):
 
         def get_body(self, data):
             print("This is the data", data)
-	    self.body = data.split("\r\n\r\n")[1]
+	    self.body = data.split()
 	    print("This is the body", self.body)
             return self.body
 
@@ -124,7 +125,7 @@ class HTTPClient(object):
             #minimum req for a HTTP get/post
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
-            requestHttp = "GET"+self.HTTPPath+"HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Connection: close\r\n\r\n"
+            requestHttp = "GET "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Connection: close\r\n\r\n"
             print(requestHttp)
 
             #sending message through socket
