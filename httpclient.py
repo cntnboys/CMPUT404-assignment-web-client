@@ -105,7 +105,16 @@ class HTTPClient(object):
             #https://ellislab.com/forums/viewthread/74005/#367460
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
-            requestHttp = "GET"+HTTPPath+"HTTP/1.1/r/n"+"Host:"+HTTPHost+"/r/n"+
+            requestHttp = "GET"+HTTPPath+"HTTP/1.1/r/n"+"Host:"+HTTPHost+"/r/n"+"Accept: */*"+"/r/n"
+
+            #sending message through socket
+            #http://www.binarytides.com/python-socket-programming-tutorial/
+            socket.sendall(requestHttp)
+
+            #get response
+            response = self.recvall(socket)
+
+            print(response)
            
             
      
