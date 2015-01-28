@@ -40,72 +40,72 @@ class HTTPClient(object):
 	HTTPPath = ""
 	HTTPPort = ""
 
-    def get_host_port(self,url):
+	def get_host_port(self,url):
         #parse a url to get what info I need, Chunhanlee told me about this builtin python library function
         #https://docs.python.org/2/library/urlparse.html
         
 	#http://stackoverflow.com/questions/20315010/python-urlparse-urlparseurl-hostname-return-none-value
         #call urlparse to seperate url
-        self.HTTPHost = urlparse.urlparse(url).hostname or ''
-	self.HTTPPath = urlparse.urlparse(url).path or ''
+	    self.HTTPHost = urlparse.urlparse(url).hostname 
+	    self.HTTPPath = urlparse.urlparse(url).path
 	
 	# if no path then set path to something
-	if (path == ''):
-		path = path + "\"
+	#if (HTTPPath == ''):
+	  #  HTTPPath = "\"
         
-       	# check for port
-	self.HTTPport = urlparse.urlparse(url).port or None
+	# check for port
+            self.HTTPport = urlparse.urlparse(url).port or None
 
 	#https://msdn.microsoft.com/en-us/library/cc959833.aspx
 	#HTTP usually run on port 80, or maybe 443 SSL ?
-	if self.HTTPport == None:
+	    if self.HTTPport == None:
 		self.HTTPport == "80"
 
         
 
-    def connect(self, host, port):
-        # use sockets!
-        #http://stackoverflow.com/questions/68774/best-way-to-open-a-socket-in-python
-        connect_sock = socket.socket()
-        connect_sock.connect((host, port))
-        return None
+        def connect(self, host, port):
+            # use sockets!
+            #http://stackoverflow.com/questions/68774/best-way-to-open-a-socket-in-python
+            connect_sock = socket.socket()
+            connect_sock.connect((host, port))
+            return None
 
-    def get_code(self, data):
-        return None
+        def get_code(self, data):
+            return None
 
-    def get_headers(self,data):
-        return None
+        def get_headers(self,data):
+            return None
 
-    def get_body(self, data):
-        return None
+        def get_body(self, data):
+            return None
 
     # read everything from the socket
-    def recvall(self, sock):
-        buffer = bytearray()
-        done = False
-        while not done:
-            part = sock.recv(1024)
-            if (part):
-                buffer.extend(part)
+        def recvall(self, sock):
+            buffer = bytearray()
+            done = False
+            while not done:
+                part = sock.recv(1024)
+                if (part):
+                    buffer.extend(part)
+                else:
+                    done = not part
+                return str(buffer)
+
+        def GET(self, url, args=None):
+            code = 500
+            body = ""
+            return HTTPRequest(code, body)
+
+        def POST(self, url, args=None):
+            code = 500
+            body = ""
+            return HTTPRequest(code, body)
+
+        def command(self, url, command="GET", args=None):
+            if (command == "POST"):
+                return self.POST( url, args )
             else:
-                done = not part
-        return str(buffer)
-
-    def GET(self, url, args=None):
-        code = 500
-        body = ""
-        return HTTPRequest(code, body)
-
-    def POST(self, url, args=None):
-        code = 500
-        body = ""
-        return HTTPRequest(code, body)
-
-    def command(self, url, command="GET", args=None):
-        if (command == "POST"):
-            return self.POST( url, args )
-        else:
-            return self.GET( url, args )
+                return self.GET( url, args )
     
 if __name__ == "__main__":
     client = HTTPClient()
