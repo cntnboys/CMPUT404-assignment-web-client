@@ -50,7 +50,7 @@ class HTTPClient(object):
         
             #http://stackoverflow.com/questions/20315010/python-urlparse-urlparseurl-hostname-return-none-value
             #call urlparse to seperate url
-	    self.HTTPHost = urlparse(url).hostname or ''
+	    self.HTTPHost = urlparse(url).hostname or ""
 
             #get pathway
 	    self.HTTPPath = urlparse(url).path or '/'
@@ -63,6 +63,9 @@ class HTTPClient(object):
 	    if self.HTTPPort == None:
 		self.HTTPPort == "80"
 
+            print(self.HTTPHost)
+            print(self.HTTPPort)
+
         def connect(self, host, port):
             # use sockets!
             #http://stackoverflow.com/questions/68774/best-way-to-open-a-socket-in-python
@@ -72,8 +75,7 @@ class HTTPClient(object):
 
         def get_code(self, data):
             print(data)
-            code = data.split()[1]
-            code = int(code)
+            code = int(data.split()[1])
             print(code)
             return code
 
