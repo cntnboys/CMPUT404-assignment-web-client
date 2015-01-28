@@ -44,6 +44,11 @@ class HTTPClient(object):
         headers= ""
         body = ""
 
+        #cant get path in get_host_port
+        def parsepath(self,url):
+            self.HTTPPath = urlparse(url).path
+            print("Path",self.HTTPPath)
+
 	def get_host_port(self,url):
             #parse a url to get what info I need, Chunhanlee told me about this builtin python library function
             #https://docs.python.org/2/library/urlparse.html
@@ -53,7 +58,8 @@ class HTTPClient(object):
 	    self.HTTPHost = urlparse(url).hostname 
 
             #get pathway
-	    self.HTTPPath = urlparse(url).path or '/'
+	    #self.HTTPPath = urlparse(url).path or '/'
+            self.parsepath(url)
         
 	    # check for port
             self.HTTPPort = urlparse(url).port or None
@@ -65,7 +71,7 @@ class HTTPClient(object):
 
             print("Host",self.HTTPHost)
             print("Port",self.HTTPPort)
-            print("Path",self.HTTPPath)
+          
 
         def connect(self, host, port):
             # use sockets!
@@ -114,8 +120,8 @@ class HTTPClient(object):
         
             #print("Creating socket to '" + self.HTTPHost + "' on port " + self.HTTPPort)
             socket = self.connect(self.HTTPHost,self.HTTPPort)
+
             #minimum req for a HTTP get/post
-            #https://ellislab.com/forums/viewthread/74005/#367460
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
             requestHttp = "GET"+self.HTTPPath+"HTTP/1.1/r/n"+"Host:"+self.HTTPHost+"/r/n"+"Accept: */*"+"/r/n"
