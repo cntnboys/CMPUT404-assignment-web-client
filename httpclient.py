@@ -159,7 +159,9 @@ class HTTPClient(object):
                 adddata = urllib.urlencode(args)
                 contentlen = str(len(adddata))
                 requestpost = requestpost + "Content-Length: %s\r\n\r\n" % contentlen
+                print("THis is request post",requestpost)
                 requestpost = requestpost + adddata
+                print("this is request post + adddata", requestpost)
                 #requestpost = "POST "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: %s "+"\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" % contentlen
                                   
             else:
