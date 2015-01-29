@@ -136,14 +136,44 @@ class HTTPClient(object):
             #get response
             response = self.recvall(socket)
 
-            print("This is the response",response)
+            #print("This is the response",response)
 
             return HTTPRequest(self.get_code(response), self.get_body(response))
 
         def POST(self, url, args=None):
-            code = 500
-            body = ""
-            return HTTPRequest(code, body)
+            #need host and port for a socket connection
+            self.get_host_port(url)
+            #https://docs.python.org/2/library/socketserver.html
+            print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
+            socket = self.connect(self.HTTPHost,self.HTTPPort)
+            
+            #code = 500
+           # body = ""
+            if (args != None):
+                adddata = urllib.urlencode(args)
+                contentlen = str(len(adddata)
+                #post request
+                #www.webmasterworld.com/forum88/8547.htm
+                requestHttp = "Post "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: %s"+"\r\n"+\
+                              "Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" % contentlen
+            
+                                    
+            else:
+                contentlen = 0
+                requestHttp = "Post "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: %s"+\
+                "\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" % contentlen
+                                     
+           
+            
+            #send request
+            socket.sendall(requestHttp)
+            response = self.recvall(socket)
+            
+            print("This is the post response", response)
+
+            
+
+            return HTTPRequest(self.get_code(response), self.get_body(response))
 
         def command(self, url, command="GET", args=None):
             if (command == "POST"):
