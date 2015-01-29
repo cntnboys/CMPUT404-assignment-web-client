@@ -47,14 +47,17 @@ class HTTPClient(object):
 	def get_host_port(self,url):
             #parse a url to get what info I need, Chunhanlee told me about this builtin python library function
             #https://docs.python.org/2/library/urlparse.html
-        
+
             #http://stackoverflow.com/questions/20315010/python-urlparse-urlparseurl-hostname-return-none-value
             #call urlparse to seperate url
 	    self.HTTPHost = urlparse(url).hostname 
 
             #get pathway
 	    self.HTTPPath = urlparse(url).path
-        
+            #checkpathway,
+            if (len(self.HTTPPath) <= 1):
+                self.HTTPPath = "/"
+
 	    # check for port
             self.HTTPPort = urlparse(url).port or None
 
@@ -83,7 +86,9 @@ class HTTPClient(object):
 	    #self.code = self.code[0].strip()
 	    #self.code = int(self.code)
 	    #self.code = int(self.code)
-	    self.code = int(data.split()[1])
+            print("gothere")
+	    self.code = int(data.split(' ')[1])
+            print("gothere2")
             print("THIS IS CODE", self.code)
             return self.code
 
@@ -120,24 +125,25 @@ class HTTPClient(object):
             self.get_host_port(url)
             #https://docs.python.org/2/library/socketserver.html
         
-            print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
+           # print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
             socket = self.connect(self.HTTPHost,self.HTTPPort)
+            print("GOT HEREEE")
 
             #minimum req for a HTTP get/post
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
-            requestHttp = "GET "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Connection: close\r\n\r\n"
-            print(requestHttp)
+            requestHttp = "GET "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*\r\n"+"Connection: close\r\n\r\n"
+            #print(requestHttp)
 
             #sending message through socket
             #http://www.binarytides.com/python-socket-programming-tutorial/
             socket.sendall(requestHttp)
-
+            print("got here 3")
             #get response
             response = self.recvall(socket)
-
+            print("got here 4")
             #print("This is the response",response)
-
+            
             return HTTPRequest(self.get_code(response), self.get_body(response))
 
         def POST(self, url, args=None):
@@ -146,7 +152,7 @@ class HTTPClient(object):
             #need host and port for a socket connection
             self.get_host_port(url)
             #https://docs.python.org/2/library/socketserver.html
-            print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
+            #print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
             socket = self.connect(self.HTTPHost,self.HTTPPort)
 
             #post request
@@ -159,19 +165,19 @@ class HTTPClient(object):
                 adddata = urllib.urlencode(args)
                 contentlen = str(len(adddata))
                 requestpost = requestpost + "Content-Length: %s\r\n\r\n" % contentlen
-                print("THis is request post",requestpost)
+               # print("THis is request post",requestpost)
                 requestpost = requestpost + adddata
-                print("this is request post + adddata", requestpost)
+                #print("this is request post + adddata", requestpost)
                 #requestpost = "POST "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: %s "+"\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" % contentlen
                                   
             else:
-                requestpost = requestpost + "\r\n\r\n"
+                requestpost = requestpost + "Content-Length: 0\r\n\r\n"
                           
             #send request
             socket.sendall(requestpost)
             response = self.recvall(socket)
                                  
-            print("This is the post response", response)
+            #print("This is the post response", response)
             return HTTPRequest(self.get_code(response), self.get_body(response))
 
         def command(self, url, command="GET", args=None):
