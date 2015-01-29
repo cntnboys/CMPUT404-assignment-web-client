@@ -141,38 +141,34 @@ class HTTPClient(object):
             return HTTPRequest(self.get_code(response), self.get_body(response))
 
         def POST(self, url, args=None):
+            
+            requestpost = ""
             #need host and port for a socket connection
             self.get_host_port(url)
             #https://docs.python.org/2/library/socketserver.html
             print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
             socket = self.connect(self.HTTPHost,self.HTTPPort)
-            
-            #code = 500
-           # body = ""
+
+            #post request
+            #www.webmasterworld.com/forum88/8547.htm
+            #requestpost = ""
+            requestpost = "POST %s HTTP/1.1\r\nHost: %s\r\n Accept: */*\r\nContent-Type: application/x-www-form-urlencoded\r\n" % (self.HTTPPath, self.HTTPHost)
+            #requestpost = "POST "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: 0 "+"\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" 
             if (args != None):
                 adddata = urllib.urlencode(args)
-                contentlen = str(len(adddata)
-                #post request
-                #www.webmasterworld.com/forum88/8547.htm
-                requestHttp = "Post "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: %s"+"\r\n"+\
-                              "Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" % contentlen
-            
-                                    
+                contentlen = str(len(adddata))
+                requestpost = requestpost + "Content-Length: %s\r\n\r\n" % contentlen
+                requestpost = requestpost + adddata
+                #requestpost = "POST "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: %s "+"\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" % contentlen
+                                  
             else:
-                contentlen = 0
-                requestHttp = "Post "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: %s"+\
-                "\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" % contentlen
-                                     
-           
-            
+                requestpost = requestpost + "\r\n\r\n"
+                          
             #send request
-            socket.sendall(requestHttp)
+            socket.sendall(requestpost)
             response = self.recvall(socket)
-            
+                                 
             print("This is the post response", response)
-
-            
-
             return HTTPRequest(self.get_code(response), self.get_body(response))
 
         def command(self, url, command="GET", args=None):
