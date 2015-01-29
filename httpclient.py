@@ -95,7 +95,8 @@ class HTTPClient(object):
 
         def get_body(self, data):
             print("This is the data", data)
-	    self.body = data.splitlines()
+	    #self.body = data.splitlines()
+            self.body = data.split("\r\n\r\n",2)[1]
 	    print("This is the body", self.body)
             return self.body
 
