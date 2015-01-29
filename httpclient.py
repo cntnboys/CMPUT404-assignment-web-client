@@ -90,7 +90,7 @@ class HTTPClient(object):
         def get_headers(self,data):
 	
 	    #print("this is the data", data.split("\n")
-	    
+	   
             return self.headers
 
         def get_body(self, data):
@@ -155,6 +155,7 @@ class HTTPClient(object):
             requestpost = "POST %s HTTP/1.1\r\nHost: %s\r\n Accept: */*\r\nContent-Type: application/x-www-form-urlencoded\r\n" % (self.HTTPPath, self.HTTPHost)
             #requestpost = "POST "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: 0 "+"\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" 
             if (args != None):
+                #https://docs.python.org/2/library/urllib.html
                 adddata = urllib.urlencode(args)
                 contentlen = str(len(adddata))
                 requestpost = requestpost + "Content-Length: %s\r\n\r\n" % contentlen
