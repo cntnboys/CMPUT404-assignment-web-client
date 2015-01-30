@@ -64,7 +64,7 @@ class HTTPClient(object):
 	    #https://msdn.microsoft.com/en-us/library/cc959833.aspx
 	    #HTTP usually run on port 80, or maybe 443 SSL ?
 	    if self.HTTPPort == None:
-		self.HTTPPort = "80"
+		self.HTTPPort = 80
 
             print("Host",self.HTTPHost)
             print("Port",self.HTTPPort)
@@ -95,7 +95,7 @@ class HTTPClient(object):
         def get_headers(self,data):
 	
 	    #print("this is the data", data.split("\n")
-	   
+	    self.headers = data.split("\r\n\r\n")[0]
             return self.headers
 
         def get_body(self, data):
@@ -110,7 +110,7 @@ class HTTPClient(object):
             buffer = bytearray()
             done = False
             while not done:
-                part = sock.recv(1024)
+                part = sock.recv(1024)U
                 if (part):
                     buffer.extend(part)
                 else:
@@ -132,7 +132,8 @@ class HTTPClient(object):
             #minimum req for a HTTP get/post
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
-            requestHttp = "GET "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*\r\n"+"Connection: close\r\n\r\n"
+            requestHttp = "
+	     
             #print(requestHttp)
 
             #sending message through socket
@@ -158,10 +159,12 @@ class HTTPClient(object):
             #post request
             #www.webmasterworld.com/forum88/8547.htm
             #requestpost = ""
+	    #https://eclass.srv.ualberta.ca/pluginfile.php/1890844/mod_resource/content/2/04-HTTP.pdf
             requestpost = "POST %s HTTP/1.1\r\nHost: %s\r\n Accept: */*\r\nContent-Type: application/x-www-form-urlencoded\r\n" % (self.HTTPPath, self.HTTPHost)
             #requestpost = "POST "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: 0 "+"\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" 
             if (args != None):
                 #https://docs.python.org/2/library/urllib.html
+		#http://stackoverflow.com/questions/5607551/python-urlencode-string
                 adddata = urllib.urlencode(args)
                 contentlen = str(len(adddata))
                 requestpost = requestpost + "Content-Length: %s\r\n\r\n" % contentlen
