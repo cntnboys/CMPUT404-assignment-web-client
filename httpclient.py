@@ -110,7 +110,7 @@ class HTTPClient(object):
             buffer = bytearray()
             done = False
             while not done:
-                part = sock.recv(1024)U
+                part = sock.recv(1024)
                 if (part):
                     buffer.extend(part)
                 else:
@@ -132,7 +132,7 @@ class HTTPClient(object):
             #minimum req for a HTTP get/post
             #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
             #class slides HTTP 2
-            requestHttp = "
+            requestHttp = "GET "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*\r\n"+"Connection: close\r\n\r\n"
 	     
             #print(requestHttp)
 
