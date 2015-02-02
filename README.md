@@ -42,7 +42,8 @@ Website used to find out how to send/receive data through socket
 http://www.binarytides.com/python-socket-programming-tutorial/
 https://docs.python.org/2/library/socketserver.html
 
-Used these websites to determine how to format my POST request
+Used these websites to determine how to format my POST request 
+also what to set my content type too
 www.webmasterworld.com/forum88/8547.htm
 https://eclass.srv.ualberta.ca/pluginfile.php/1890844/mod_resource/content/2/04-HTTP.pdf
 
