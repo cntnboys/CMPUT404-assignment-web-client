@@ -45,63 +45,51 @@ class HTTPClient(object):
         body = ""
 
 	def get_host_port(self,url):
-            #parse a url to get what info I need, Chunhanlee told me about this builtin python library function
-            #https://docs.python.org/2/library/urlparse.html
-
-            #http://stackoverflow.com/questions/20315010/python-urlparse-urlparseurl-hostname-return-none-value
+            
             #call urlparse to seperate url
 	    self.HTTPHost = urlparse(url).hostname 
 
             #get pathway
 	    self.HTTPPath = urlparse(url).path
-            #checkpathway,
+
+            #checkpathway if not a valid pathway set default path of /
             if (len(self.HTTPPath) <= 1):
                 self.HTTPPath = "/"
 
 	    # check for port
             self.HTTPPort = urlparse(url).port or None
+            
 
-	    #https://msdn.microsoft.com/en-us/library/cc959833.aspx
+	    #set port if there is no port is present
 	    #HTTP usually run on port 80, or maybe 443 SSL ?
 	    if self.HTTPPort == None:
 		self.HTTPPort = 80
 
-            print("Host",self.HTTPHost)
-            print("Port",self.HTTPPort)
-            print("Path",self.HTTPPath)
+            #print("Host",self.HTTPHost)
+            #print("Port",self.HTTPPort)
+            #print("Path",self.HTTPPath)
 
         def connect(self, host, port):
-            # use sockets!
-            #http://stackoverflow.com/questions/68774/best-way-to-open-a-socket-in-python
+            #initialize a socket using host and port 
             connect_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             connect_sock.connect((host, port))
             return connect_sock
 
         def get_code(self, data):
-	    #print("DATAISTHIS",data)
-	    #self.code = data.split("code")
-	    #print ("THIS IS SPLITCODE",self.code)	
-	    #print("11231323", self.code[1])
-	    #self.code = self.code[1].split(".")
-	    #self.code = self.code[0].strip()
-	    #self.code = int(self.code)
-	    #self.code = int(self.code)
-            print("gothere")
+            #split the server response on spaces
+            #second element will be the response code
 	    self.code = int(data.split(' ')[1])
-            print("gothere2")
-            print("THIS IS CODE", self.code)
+            #print("THIS IS CODE", self.code)
             return self.code
 
         def get_headers(self,data):
-	
+            #split the response on \r\n\r\n first element will be the headers
 	    #print("this is the data", data.split("\n")
 	    self.headers = data.split("\r\n\r\n")[0]
             return self.headers
 
         def get_body(self, data):
-            print("This is the data", data)
-	   # self.body = data.split("\r\n\r\n")
-          #  print("Hey body before", self.body)
+            #split response on \r\n\r\n second element will be the body
             self.body = data.split("\r\n\r\n",1)[1]
             return self.body
 
@@ -118,69 +106,66 @@ class HTTPClient(object):
             return str(buffer)
 
         def GET(self, url, args=None):
-            #code = 500
-            #body = ""
-            
+
             #need host and port for a socket connection
             self.get_host_port(url)
-            #https://docs.python.org/2/library/socketserver.html
-        
-           # print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
-            socket = self.connect(self.HTTPHost,self.HTTPPort)
-            print("GOT HEREEE")
 
-            #minimum req for a HTTP get/post
-            #http://developer.nokia.com/community/discussion/showthread.php/180397-Sending-minimum-Headers-in-HTTP-request
-            #class slides HTTP 2
+            #print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
+            #initialize socket for get request
+            socket = self.connect(self.HTTPHost,self.HTTPPort)
+
+            #minimum req for a HTTP get request
             requestHttp = "GET "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*\r\n"+"Connection: close\r\n\r\n"
 	     
-            #print(requestHttp)
-
-            #sending message through socket
-            #http://www.binarytides.com/python-socket-programming-tutorial/
+            #sending HTTP message through socket to server
             socket.sendall(requestHttp)
-            print("got here 3")
+           
             #get response
             response = self.recvall(socket)
-            print("got here 4")
             #print("This is the response",response)
-            
+
+            #parse server response for code/body and store in HTTPRequest Object
             return HTTPRequest(self.get_code(response), self.get_body(response))
 
         def POST(self, url, args=None):
-            
             requestpost = ""
-            #need host and port for a socket connection
+            #need host and port for socket creation
             self.get_host_port(url)
-            #https://docs.python.org/2/library/socketserver.html
+
             #print("Creating socket to '" + self.HTTPHost + "' on port " + str(self.HTTPPort))
             socket = self.connect(self.HTTPHost,self.HTTPPort)
 
-            #post request
-            #www.webmasterworld.com/forum88/8547.htm
-            #requestpost = ""
-	    #https://eclass.srv.ualberta.ca/pluginfile.php/1890844/mod_resource/content/2/04-HTTP.pdf
+            #post request formatting
             requestpost = "POST %s HTTP/1.1\r\nHost: %s\r\n Accept: */*\r\nContent-Type: application/x-www-form-urlencoded\r\n" % (self.HTTPPath, self.HTTPHost)
-            #requestpost = "POST "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: 0 "+"\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" 
+
+            #check if any args is anything
             if (args != None):
-                #https://docs.python.org/2/library/urllib.html
-		#http://stackoverflow.com/questions/5607551/python-urlencode-string
+                
+                #encode data using urllib
                 adddata = urllib.urlencode(args)
+
+                #find out the length of the encoded data
                 contentlen = str(len(adddata))
+
+                #add Content-Length to header containing datas length
                 requestpost = requestpost + "Content-Length: %s\r\n\r\n" % contentlen
-               # print("THis is request post",requestpost)
+                
+                #add the edcoded data after content-length
                 requestpost = requestpost + adddata
-                #print("this is request post + adddata", requestpost)
-                #requestpost = "POST "+self.HTTPPath+" HTTP/1.1\r\n"+"Host:"+self.HTTPHost+"\r\n"+"Accept: */*"+"\r\n"+"Content-Length: %s "+"\r\n"+"Content-Type: application/x-www-form-urlencoded"+"\r\n"+"Connection: close\r\n\r\n" % contentlen
-                                  
+
+            # if no args then set content-length to 0                      
             else:
                 requestpost = requestpost + "Content-Length: 0\r\n\r\n"
                           
-            #send request
+            #send request over socket
             socket.sendall(requestpost)
+
+            #get response from server
             response = self.recvall(socket)
                                  
             #print("This is the post response", response)
+
+            #parse response for code and body and store in HTTPRequest object
             return HTTPRequest(self.get_code(response), self.get_body(response))
 
         def command(self, url, command="GET", args=None):
